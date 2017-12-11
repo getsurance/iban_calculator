@@ -5,7 +5,7 @@ require 'logger'
 
 require 'iban_calculator/bank'
 require 'iban_calculator/bic_candidate'
-require 'iban_calculator/iban_bic'
+require 'iban_calculator/calculate_iban'
 require 'iban_calculator/iban_validator_response'
 require 'iban_calculator/invalid_data'
 require 'iban_calculator/active_support' if ActiveSupport::VERSION::MAJOR == 3
@@ -23,21 +23,28 @@ module IbanCalculator
   # Errors
   ServiceError = Class.new(StandardError)
 
-  def self.calculate_iban(attributes = {})
-    client = IbanBic.new(config.user, config.password, config.url, config.logger)
-    client.calculate_iban(attributes)
-  end
+  class << self
+    def calculate_iban(attributes = {})
+      calculator = CalculateIban.new(config.user, config.password, client, config.logger)
+      calculator.call(attributes)
+    end
 
-  def self.validate_iban(iban)
-    response = execute(:validate_iban, iban: iban, user: config.user, password: config.password)
-    IbanValidatorResponse.new(response.body[:validate_iban_response][:return])
-  end
+    def validate_iban(iban)
+      response = execute(:validate_iban, iban: iban, user: config.user, password: config.password)
+      IbanValidatorResponse.new(response.body[:validate_iban_response][:return])
+    end
 
-  def self.execute(method, options = {})
-    client = Savon.client(wsdl: config.url, logger: config.logger)
-    client.call(method, message: options).tap do |response|
-      status = response.body[:"#{method}_response"][:return][:result]
-      fail(ServiceError, status) unless response.body[:"#{method}_response"][:return][:return_code]
+    def execute(method, options = {})
+      client.call(method, message: options).tap do |response|
+        status = response.body[:"#{method}_response"][:return][:result]
+        fail(ServiceError, status) unless response.body[:"#{method}_response"][:return][:return_code]
+      end
+    end
+
+    private
+
+    def client
+      @client ||= Savon.client(wsdl: config.url, logger: config.logger)
     end
   end
 end

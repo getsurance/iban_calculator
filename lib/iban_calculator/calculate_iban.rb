@@ -1,4 +1,4 @@
-require 'savon'
+require_relative 'client'
 
 # Return codes and their meaning:
 #
@@ -17,9 +17,9 @@ require 'savon'
 # 1024 = bank_code has an invalid length
 # 4096 = data is missing (i.e. country code)
 # 8192= country is not yet supported
-#
+
 module IbanCalculator
-  class IbanBic
+  class CalculateIban
     ITALIAN_IBAN_LENGTH = 27
     PREFIX_AND_CHECKSUM_LENGTH = 4
 
@@ -27,18 +27,19 @@ module IbanCalculator
     PROBABLY_VALID_RESPONSE_CODE = 32..127
     SERVICE_ERROR_RESPONSE_CODE = 65536
 
-    attr_accessor :user, :password, :url, :logger
+    attr_accessor :user, :password, :client, :logger
 
-    def initialize(user, password, url, logger)
-      self.user = user
-      self.password = password
-      self.url = url
-      self.logger = logger
+    def initialize(user, password, client, logger)
+      @user = user
+      @password = password
+      @client = client
+      @logger = logger
     end
 
     # You should provide country, bank_code, and account_number. (cin, abi, and cab for Italian accounts)
-    def calculate_iban(attributes)
+    def call(attributes)
       payload = iban_payload(attributes)
+
       response = client.call(:calculate_iban, message: payload).body[:calculate_iban_response][:return]
       log "iban lookup attributes=#{attributes} payload=#{payload} response=#{response}"
 
@@ -95,10 +96,6 @@ module IbanCalculator
 
     def log(message)
       logger.info message
-    end
-
-    def client
-      @client ||= Savon.client(wsdl: url)
     end
   end
 end
