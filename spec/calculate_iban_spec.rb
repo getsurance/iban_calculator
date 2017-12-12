@@ -1,5 +1,5 @@
-describe IbanCalculator::CalculateIban do
-  subject { described_class.new('user', 'pass', instance_double(IbanCalculator::Client), Logger.new(STDOUT) ) }
+RSpec.describe IbanCalculator::CalculateIban do
+  subject { described_class.new('user', 'pass', instance_double(IbanCalculator::Client), Logger.new(STDOUT)) }
 
   before { allow(subject.logger).to receive(:info) }
 
@@ -9,13 +9,14 @@ describe IbanCalculator::CalculateIban do
     end
 
     it 'returns hash with correct account number if valid data is provided' do
-      expect(subject.italian_account_number(
-        'country' => 'IT',
-        'cab' => '03280',
-        'abi' => '03002',
-        'cin' => 'D',
-        'account' => '400162854',
-      )).to eq('account' => 'D0300203280000400162854')
+      expect(
+        subject.italian_account_number(
+          'country' => 'IT',
+          'cab' => '03280',
+          'abi' => '03002',
+          'cin' => 'D',
+          'account' => '400162854')
+      ).to eq('account' => 'D0300203280000400162854')
     end
   end
 
