@@ -51,10 +51,10 @@ module IbanCalculator
         formatted_result(response)
       when SERVICE_ERROR_RESPONSE_CODE
         log "iban check failed return_code=#{return_code}"
-        fail ServiceError, 'Service could not handle the request'
+        raise ServiceError, 'Service could not handle the request'
       else
         log "iban check invalid return_code=#{return_code}"
-        fail InvalidData.new('Invalid input data', return_code)
+        raise InvalidData.new('Invalid input data', return_code)
       end
     end
 
@@ -83,7 +83,7 @@ module IbanCalculator
       [candidates[:item].select { |key, value| [:bic, :zip, :city].include?(key) && value.kind_of?(String) }]
     rescue
       log "Could not handle candidates=#{candidates}"
-      fail ArgumentError, "Could not handle BIC response"
+      raise ArgumentError, "Could not handle BIC response"
     end
 
     def iban_payload(attributes)

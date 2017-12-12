@@ -1,3 +1,5 @@
+require 'active_support/core_ext/hash'
+
 module IbanCalculator
   class BicCandidate
     attr_accessor :bic, :city, :sample_url, :www_count, :zip

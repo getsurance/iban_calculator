@@ -1,6 +1,5 @@
 require 'iban_calculator/version'
 require 'dry-configurable'
-require 'active_support/core_ext/hash'
 require 'logger'
 
 require 'iban_calculator/bank'
@@ -33,7 +32,7 @@ module IbanCalculator
     def execute(method, options = {})
       client.call(method, message: options).tap do |response|
         status = response.body[:"#{method}_response"][:return][:result]
-        fail(ServiceError, status) unless response.body[:"#{method}_response"][:return][:return_code]
+        raise ServiceError, status unless response.body[:"#{method}_response"][:return][:return_code]
       end
     end
 
