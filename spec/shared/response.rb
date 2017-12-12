@@ -1,4 +1,16 @@
 RSpec.shared_context 'response' do
+  def build_valid_response(operation)
+    base_with(operation, valid_response)
+  end
+
+  def build_invalid_response(operation)
+    base_with(operation, invalid_response)
+  end
+
+  def base_with(operation, response)
+    double(body: { "#{operation}_response".to_sym => { return: response } })
+  end
+
   def valid_response
     {
       :iban => 'IE92BOFI90001710027952',

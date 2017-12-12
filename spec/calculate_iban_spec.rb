@@ -28,79 +28,6 @@ RSpec.describe IbanCalculator::CalculateIban do
     end
   end
 
-  describe '#process_bic_candidates' do
-    context 'known single BIC payload' do
-      let(:payload) { valid_payload[:bic_candidates] }
-
-      it 'returns an array' do
-        expect(subject.process_bic_candidates(payload)).to be_kind_of(Array)
-      end
-
-      it 'returns its bank\'s bic' do
-        expect(subject.process_bic_candidates(payload).first).to match hash_including(bic: 'BYLADEM1001')
-      end
-
-      it 'returns its bank\'s zip' do
-        expect(subject.process_bic_candidates(payload).first).to match hash_including(zip: '10117')
-      end
-
-      it 'returns its bank\'s city' do
-        expect(subject.process_bic_candidates(payload).first).to match hash_including(city: 'Berlin')
-      end
-
-      context 'empty fields' do
-        let(:payload) { {:item=>{
-                            :bic=>"UNCRITMM",
-                            :zip=>{:"@xsi:type"=>"xsd:string"},
-                            :city=>{:"@xsi:type"=>"xsd:string"},
-                            :wwwcount=>"0",
-                            :sampleurl=>{:"@xsi:type"=>"xsd:string"},
-                            :"@xsi:type"=>"tns:BICStruct"
-                          },
-                          :"@xsi:type"=>"SOAP-ENC:Array",
-                          :"@soap_enc:array_type"=>"tns:BICStruct[1]"} }
-
-        it 'ignores empty zip' do
-          expect(subject.process_bic_candidates(payload).first.keys).to_not include(:zip)
-        end
-
-        it 'ignores empty city' do
-          expect(subject.process_bic_candidates(payload).first.keys).to_not include(:city)
-        end
-      end
-    end
-
-    context 'unknown payload' do
-      let(:payload) { { :items => [], :"@xsi:type" => 'SOAP-ENC:Array' } }
-
-      it 'logs the payload' do
-        subject.process_bic_candidates(payload) rescue
-        expect(subject.logger).to have_received(:info)
-      end
-
-      it 'raises an exception' do
-        expect { subject.process_bic_candidates(payload) }.to raise_exception(ArgumentError)
-      end
-    end
-  end
-
-  describe '#formatted_result' do
-    before { allow(subject).to receive(:process_bic_candidates).and_return(['data']) }
-
-    it 'returns a valid ruby date for last update date' do
-      expect(subject.formatted_result(valid_payload)[:updated_at]).to be_kind_of(Date)
-    end
-
-    it 'transforms the list of bic candidates' do
-      subject.formatted_result(valid_payload)
-      expect(subject).to have_received(:process_bic_candidates)
-    end
-
-    it 'includes iban' do
-      expect(subject.formatted_result(valid_payload).keys).to include(:iban)
-    end
-  end
-
   describe '#iban_payload' do
     context 'italian data is provided' do
       before { allow(subject).to receive(:italian_account_number).and_return({ 'account' => 'italy-123' }) }
@@ -133,62 +60,13 @@ RSpec.describe IbanCalculator::CalculateIban do
   end
 
   describe '#call' do
+    let(:response) { double(body: { calculate_iban_response: { return: valid_payload } }) }
+
     before { allow(subject.client).to receive(:call).and_return(response) }
 
-    context 'valid response' do
-      let(:response) { double(body: { calculate_iban_response: { return: valid_payload } }) }
-
-      it 'returns a formatted response' do
-        allow(subject).to receive(:formatted_result)
-        subject.call({})
-        expect(subject).to have_received(:formatted_result)
-      end
-
-      it 'calls the client with the generated payload' do
-        subject.call({})
-        expect(subject.client).to have_received(:call).with(:calculate_iban, message: anything)
-      end
-    end
-
-    context 'probably valid response' do
-      let(:response) { double(body: { calculate_iban_response: { return: valid_payload.merge(return_code: '32') } }) }
-
-      it 'logs a message' do
-        subject.call({}) rescue IbanCalculator::InvalidData
-        expect(subject.logger).to have_received(:info).with(/needs manual check/)
-      end
-
-      it 'returns a formatted response' do
-        allow(subject).to receive(:formatted_result)
-        subject.call({})
-        expect(subject).to have_received(:formatted_result)
-      end
-    end
-
-    context 'invalid response' do
-      let(:response) { double(body: { calculate_iban_response: { return: valid_payload.merge(return_code: '128') } }) }
-
-      it 'logs a message' do
-        subject.call({}) rescue IbanCalculator::InvalidData
-        expect(subject.logger).to have_received(:info).with(/iban check invalid/)
-      end
-
-      it 'fails with invalid data exception' do
-        expect{ subject.call({}) }.to raise_exception(IbanCalculator::InvalidData)
-      end
-    end
-
-    context 'server error response' do
-      let(:response) { double(body: { calculate_iban_response: { return: valid_payload.merge(return_code: '65536') } }) }
-
-      it 'logs a message' do
-        subject.call({}) rescue IbanCalculator::ServiceError
-        expect(subject.logger).to have_received(:info).with(/iban check failed/)
-      end
-
-      it 'fails with service error exception' do
-        expect{ subject.call({}) }.to raise_exception(IbanCalculator::ServiceError)
-      end
+    it 'calls the client with the generated payload' do
+      subject.call({})
+      expect(subject.client).to have_received(:call).with(:calculate_iban, message: anything)
     end
   end
 end

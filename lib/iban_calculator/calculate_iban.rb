@@ -23,10 +23,6 @@ module IbanCalculator
     ITALIAN_IBAN_LENGTH = 27
     PREFIX_AND_CHECKSUM_LENGTH = 4
 
-    VALID_RESPONSE_CODE = 0..31
-    PROBABLY_VALID_RESPONSE_CODE = 32..127
-    SERVICE_ERROR_RESPONSE_CODE = 65536
-
     attr_accessor :user, :password, :client, :logger
 
     def initialize(user, password, client, logger)
@@ -40,22 +36,9 @@ module IbanCalculator
     def call(attributes)
       payload = iban_payload(attributes)
 
-      response = client.(:calculate_iban, message: payload).body[:calculate_iban_response][:return]
+      response = client.(:calculate_iban, message: payload)
       log "iban lookup attributes=#{attributes} payload=#{payload} response=#{response}"
 
-      case return_code = response[:return_code].to_i
-      when VALID_RESPONSE_CODE
-        formatted_result(response)
-      when PROBABLY_VALID_RESPONSE_CODE
-        log "iban check needs manual check return_code=#{return_code}"
-        formatted_result(response)
-      when SERVICE_ERROR_RESPONSE_CODE
-        log "iban check failed return_code=#{return_code}"
-        raise ServiceError, 'Service could not handle the request'
-      else
-        log "iban check invalid return_code=#{return_code}"
-        raise InvalidData.new('Invalid input data', return_code)
-      end
     end
 
     def italian_account_number(attributes = {})
@@ -67,23 +50,6 @@ module IbanCalculator
 
     def default_payload
       { country: '', bank_code: '', account: '', user: user, password: password, bic: '', legacy_mode: 0 }
-    end
-
-    def formatted_result(data)
-      { iban: data[:iban],
-        bics: process_bic_candidates(data[:bic_candidates]),
-        country: data[:country],
-        bank_code: data[:bank_code],
-        bank: data[:bank],
-        account_number: data[:account_number],
-        updated_at: Date.parse(data[:data_age]) }
-    end
-
-    def process_bic_candidates(candidates)
-      [candidates[:item].select { |key, value| %i[bic zip city].include?(key) && value.is_a?(String) }]
-    rescue StandardError
-      log "Could not handle candidates=#{candidates}"
-      raise ArgumentError, 'Could not handle BIC response'
     end
 
     def iban_payload(attributes)
