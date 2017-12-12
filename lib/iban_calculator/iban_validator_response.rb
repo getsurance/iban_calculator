@@ -4,8 +4,8 @@ module IbanCalculator
       length: :length_check,
       account_number: :account_check,
       bank_code: :bank_code_check,
-      iban_checksum: :iban_checksum_check,
-    }
+      iban_checksum: :iban_checksum_check
+    }.freeze
 
     attr_accessor :raw_response
 
@@ -26,15 +26,15 @@ module IbanCalculator
     end
 
     def bank
-      @bank ||= begin Bank.new({
-          code: string_or_default(raw_response[:bank_code]),
-          name: string_or_default(raw_response[:bank]),
-          country: string_or_default(raw_response[:country]),
-          address: string_or_default(raw_response[:bank_address]).strip,
-          url: string_or_default(raw_response[:bank_url]),
-          branch: string_or_default(raw_response[:branch]),
-          branch_code: string_or_default(raw_response[:branch_code]),
-        })
+      @bank ||= begin Bank.new(
+        code: string_or_default(raw_response[:bank_code]),
+        name: string_or_default(raw_response[:bank]),
+        country: string_or_default(raw_response[:country]),
+        address: string_or_default(raw_response[:bank_address]).strip,
+        url: string_or_default(raw_response[:bank_url]),
+        branch: string_or_default(raw_response[:branch]),
+        branch_code: string_or_default(raw_response[:branch_code])
+      )
       end
     end
 
@@ -67,14 +67,14 @@ module IbanCalculator
         bank_code: bank.code,
         bics: bic_candidates.map { |c| c.as_json(opts) },
         updated_at: updated_at,
-        checks: checks,
+        checks: checks
       }.deep_stringify_keys!
     end
 
     private
 
     def string_or_default(input, default = '')
-      input.kind_of?(String) ? input : default
+      input.is_a?(String) ? input : default
     end
   end
 end

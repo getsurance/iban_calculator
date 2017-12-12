@@ -40,7 +40,7 @@ module IbanCalculator
     def call(attributes)
       payload = iban_payload(attributes)
 
-      response = client.call(:calculate_iban, message: payload).body[:calculate_iban_response][:return]
+      response = client.(:calculate_iban, message: payload).body[:calculate_iban_response][:return]
       log "iban lookup attributes=#{attributes} payload=#{payload} response=#{response}"
 
       case return_code = response[:return_code].to_i
@@ -59,7 +59,7 @@ module IbanCalculator
     end
 
     def italian_account_number(attributes = {})
-      return {} unless attributes['country'].to_s.upcase == 'IT'
+      return {} unless attributes['country'].to_s.casecmp('IT').zero?
       left_length = ITALIAN_IBAN_LENGTH - PREFIX_AND_CHECKSUM_LENGTH - attributes['account'].length
       left_side = [attributes['cin'], attributes['abi'], attributes['cab']].join.ljust(left_length, '0')
       { 'account' => left_side + attributes['account'] }
@@ -80,17 +80,17 @@ module IbanCalculator
     end
 
     def process_bic_candidates(candidates)
-      [candidates[:item].select { |key, value| [:bic, :zip, :city].include?(key) && value.kind_of?(String) }]
-    rescue
+      [candidates[:item].select { |key, value| %i[bic zip city].include?(key) && value.is_a?(String) }]
+    rescue StandardError
       log "Could not handle candidates=#{candidates}"
-      raise ArgumentError, "Could not handle BIC response"
+      raise ArgumentError, 'Could not handle BIC response'
     end
 
     def iban_payload(attributes)
       attributes = attributes.with_indifferent_access
       attributes['account'] = attributes.delete('account_number')
       normalized_attributes = attributes.merge(italian_account_number(attributes))
-      payload = normalized_attributes.select { |k,_| %w(country account bank_code).include?(k) }
+      payload = normalized_attributes.select { |k, _| %w[country account bank_code].include?(k) }
       default_payload.merge(payload.symbolize_keys)
     end
 

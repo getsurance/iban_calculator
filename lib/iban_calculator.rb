@@ -21,7 +21,7 @@ module IbanCalculator
   class << self
     def calculate_iban(attributes = {})
       calculator = CalculateIban.new(config.user, config.password, client, config.logger)
-      calculator.call(attributes)
+      calculator.(attributes)
     end
 
     def validate_iban(iban)
@@ -30,7 +30,7 @@ module IbanCalculator
     end
 
     def execute(method, options = {})
-      client.call(method, message: options).tap do |response|
+      client.(method, message: options).tap do |response|
         status = response.body[:"#{method}_response"][:return][:result]
         raise ServiceError, status unless response.body[:"#{method}_response"][:return][:return_code]
       end

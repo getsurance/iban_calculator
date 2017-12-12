@@ -12,7 +12,7 @@ module IbanCalculator
       self.branch_code = attributes[:branch_code]
     end
 
-    def as_json(opts = {})
+    def as_json(_opts = {})
       {
         code: code,
         name: name,
@@ -20,7 +20,7 @@ module IbanCalculator
         address: address,
         url: url,
         branch: branch,
-        branch_code: branch_code,
+        branch_code: branch_code
       }
     end
   end

@@ -11,7 +11,7 @@ describe IbanCalculator::InvalidData do
     end
 
     it 'can combine multiple errors of same attribute' do
-      expect(subject.resolve_error_code(128 + 512)).to eq(account_number: [:checksum_failed, :invalid_length])
+      expect(subject.resolve_error_code(128 + 512)).to eq(account_number: %i[checksum_failed invalid_length])
     end
 
     it 'can combine multiple errors of same attribute' do

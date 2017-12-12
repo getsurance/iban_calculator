@@ -1,9 +1,8 @@
 RSpec.describe IbanCalculator::BicCandidate do
-
   subject { described_class.new(single_candidate[:item]) }
 
   describe '.build_list' do
-     it 'returns an array if one item is added' do
+    it 'returns an array if one item is added' do
       expect(described_class.build_list(single_candidate).size).to eq(1)
     end
 
@@ -52,17 +51,17 @@ RSpec.describe IbanCalculator::BicCandidate do
 
   describe '#as_json' do
     it 'takes a hash as argument to be compatible with rails' do
-      expect{ subject.as_json({}) }.to_not raise_error
+      expect { subject.as_json({}) }.to_not raise_error
     end
 
     it 'returns all attributes' do
-      expect(subject.as_json).to eq({
-        "bic" => 'BOFIIE2D',
-        "zip" => 'zip',
-        "city" => 'city',
-        "sample_url" => 'sample_url',
-        "www_count" => 0
-      })
+      expect(subject.as_json).to eq(
+        'bic' => 'BOFIIE2D',
+        'zip' => 'zip',
+        'city' => 'city',
+        'sample_url' => 'sample_url',
+        'www_count' => 0
+      )
     end
   end
 

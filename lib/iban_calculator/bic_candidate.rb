@@ -20,20 +20,20 @@ module IbanCalculator
       www_count > 0 ? :www : :directory
     end
 
-    def as_json(opts = {})
+    def as_json(_opts = {})
       {
         bic: bic,
         zip: zip,
         city: city,
         sample_url: sample_url,
-        www_count: www_count,
+        www_count: www_count
       }.deep_stringify_keys!
     end
 
     private
 
     def string_or_default(input, default = '')
-      input.kind_of?(String) ? input : default
+      input.is_a?(String) ? input : default
     end
   end
 end

@@ -7,7 +7,7 @@ module IbanCalculator
     end
 
     def call(operation, args = {})
-      @adapter.call(operation, args)
+      @adapter.(operation, args)
     end
   end
 end
