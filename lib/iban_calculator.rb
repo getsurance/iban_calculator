@@ -8,19 +8,15 @@ require 'iban_calculator/bic_candidate'
 require 'iban_calculator/calculate_iban'
 require 'iban_calculator/iban_validator_response'
 require 'iban_calculator/invalid_data'
-require 'iban_calculator/active_support' if ActiveSupport::VERSION::MAJOR == 3
 
 module IbanCalculator
-  # Extensions
   include ActiveSupport::Configurable
 
-  # Configuration
   config_accessor(:url) { 'https://ssl.ibanrechner.de/soap/?wsdl' }
   config_accessor(:user) { '' }
   config_accessor(:password) { '' }
   config_accessor(:logger) { Logger.new(STDOUT) }
 
-  # Errors
   ServiceError = Class.new(StandardError)
 
   class << self
