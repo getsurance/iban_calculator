@@ -1,3 +1,8 @@
+0.3.0
+-----
+* Remove ActiveSupport::Configurable in favour of Dry::Configurable
+* This breaks compatibility and now requires a configuration block.
+
 0.2.0
 -----
 * [lower active_support dependency](https://github.com/railslove/iban_calculator/pull/7)

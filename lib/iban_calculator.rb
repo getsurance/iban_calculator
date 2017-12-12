@@ -1,5 +1,5 @@
 require 'iban_calculator/version'
-require 'active_support/configurable'
+require 'dry-configurable'
 require 'active_support/core_ext/hash'
 require 'logger'
 
@@ -10,12 +10,12 @@ require 'iban_calculator/iban_validator_response'
 require 'iban_calculator/invalid_data'
 
 module IbanCalculator
-  include ActiveSupport::Configurable
+  extend Dry::Configurable
 
-  config_accessor(:url) { 'https://ssl.ibanrechner.de/soap/?wsdl' }
-  config_accessor(:user) { '' }
-  config_accessor(:password) { '' }
-  config_accessor(:logger) { Logger.new(STDOUT) }
+  setting :url, 'https://ssl.ibanrechner.de/soap/?wsdl'
+  setting :user, ''
+  setting :password, ''
+  setting :logger, Logger.new(STDOUT)
 
   ServiceError = Class.new(StandardError)
 

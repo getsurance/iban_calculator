@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/railslove/iban_calculator.svg?branch=master)](https://travis-ci.org/railslove/iban_calculator)
-
 # IbanCalculator
 
 A wrapper for ibanrechner.de API. It allows converting bank account data from legacy syntax to new SEPA IBAN/BIC.
@@ -22,23 +20,29 @@ Or install it yourself as:
 
 In order to use iban calculator, you need to create an account at [iban-bic.com](http://www.iban-bic.com/).
 
-In case you are using rails, configure your app like this:
+Configuration can be done with a block:
 
-    # config/initializers/iban_calculator.rb
-    IbanCalculator.user = 'your_username',
-    IbanCalculator.password = 'your_password'
-    IbanCalculator.logger = Rails.logger
+```ruby
+IbanCalculator.configure do |config|
+  config.user =     'username',
+  config.password = 'password'
+  config.logger =   Logger.new(STDERR)
+end
+```
 
 Whenever you need to convert European legacy account data to new SEPA IBAN format:
 
-    # app/models/your_model.rb
-    IbanCalculator.calculate_iban country: 'DE', account_number: '123', bank_code: '456'
+```ruby
+IbanCalculator.calculate_iban country: 'DE', account_number: '123', bank_code: '456'
+```
 
 Example data can be found at: http://www.iban-bic.com/sample_accounts.html
 
 You can also validate a given IBAN and fetch additional data about it:
 
-    IbanCalculator.validate_iban 'AL90208110080000001039531801'
+```ruby
+IbanCalculator.validate_iban 'AL90208110080000001039531801'
+```
 
 
 ## Contributing
