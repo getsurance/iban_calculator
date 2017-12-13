@@ -1,4 +1,6 @@
 module IbanCalculator
+  class ServiceError < StandardError; end
+
   class InvalidData < StandardError
     CODES = {
       128  => [:account_number, [:checksum_failed]],
@@ -13,7 +15,7 @@ module IbanCalculator
     attr_accessor :errors
 
     def initialize(msg, error_code)
-      self.errors = resolve_error_code(error_code)
+      @errors = resolve_error_code(error_code)
       super(msg)
     end
 

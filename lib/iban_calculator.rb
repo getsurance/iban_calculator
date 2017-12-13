@@ -3,10 +3,10 @@ require 'dry-configurable'
 require 'logger'
 
 require 'iban_calculator/bank'
+require 'iban_calculator/errors'
 require 'iban_calculator/bic_candidate'
 require 'iban_calculator/calculate_iban'
 require 'iban_calculator/iban_validator_response'
-require 'iban_calculator/invalid_data'
 
 module IbanCalculator
   extend Dry::Configurable
@@ -15,8 +15,6 @@ module IbanCalculator
   setting :user, ''
   setting :password, ''
   setting :logger, Logger.new(STDOUT)
-
-  ServiceError = Class.new(StandardError)
 
   class << self
     def calculate_iban(attributes = {})
