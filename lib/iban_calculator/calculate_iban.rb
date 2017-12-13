@@ -23,11 +23,9 @@ module IbanCalculator
     ITALIAN_IBAN_LENGTH = 27
     PREFIX_AND_CHECKSUM_LENGTH = 4
 
-    attr_accessor :user, :password, :client, :logger
+    attr_accessor :client, :logger
 
-    def initialize(user, password, client, logger)
-      @user = user
-      @password = password
+    def initialize(client, logger)
       @client = client
       @logger = logger
     end
@@ -49,7 +47,7 @@ module IbanCalculator
     end
 
     def default_payload
-      { country: '', bank_code: '', account: '', user: user, password: password, bic: '', legacy_mode: 0 }
+      { country: '', bank_code: '', account: '', bic: '', legacy_mode: 0 }
     end
 
     def iban_payload(attributes)

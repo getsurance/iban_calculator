@@ -20,26 +20,34 @@ module IbanCalculator
 
   class << self
     def calculate_iban(attributes = {})
-      calculator = CalculateIban.new(config.user, config.password, client, config.logger)
-      calculator.(attributes)
+      iban_calculator.(attributes)
     end
 
     def validate_iban(iban)
-      response = execute(:validate_iban, iban: iban, user: config.user, password: config.password)
-      IbanValidatorResponse.new(response.body[:validate_iban_response][:return])
-    end
+      response =
+        client.(:validate_iban, message: { iban: iban }).tap do |resp|
+          status = resp.body[:"#{method}_response"][:return][:result]
+          raise ServiceError, status unless resp.body[:"#{method}_response"][:return][:return_code]
+        end
 
-    def execute(method, options = {})
-      client.(method, message: options).tap do |response|
-        status = response.body[:"#{method}_response"][:return][:result]
-        raise ServiceError, status unless response.body[:"#{method}_response"][:return][:return_code]
-      end
+      IbanValidatorResponse.new(response.body[:validate_iban_response][:return])
     end
 
     private
 
+    def iban_calculator
+      @iban_calculator ||= CalculateIban.new(client, config.logger)
+    end
+
     def client
-      @client ||= Client.new(wsdl: config.url, logger: config.logger)
+      @client ||= Client.new(
+        user: config.user,
+        password: config.password,
+        adapter_options: {
+          wsdl: config.url,
+          logger: config.logger
+        }
+      )
     end
   end
 end

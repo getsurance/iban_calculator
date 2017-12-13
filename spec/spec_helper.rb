@@ -23,4 +23,9 @@ RSpec.configure do |config|
     mocks.syntax = :expect
     mocks.verify_partial_doubles = true
   end
+
+  config.before(:each) do
+    IbanCalculator.config.user = ''
+    IbanCalculator.config.password = ''
+  end
 end

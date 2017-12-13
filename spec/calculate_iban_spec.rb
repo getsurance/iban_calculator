@@ -1,7 +1,7 @@
 RSpec.describe IbanCalculator::CalculateIban do
   include_context 'payload'
 
-  subject { described_class.new('user', 'pass', instance_double(IbanCalculator::Client), Logger.new(STDOUT)) }
+  subject { described_class.new(instance_double(IbanCalculator::Client), Logger.new(STDOUT)) }
 
   before { allow(subject.logger).to receive(:info) }
 
@@ -19,12 +19,6 @@ RSpec.describe IbanCalculator::CalculateIban do
           'cin' => 'D',
           'account' => '400162854')
       ).to eq('account' => 'D0300203280000400162854')
-    end
-  end
-
-  describe '#default_payload' do
-    it 'includes account data' do
-      expect(subject.default_payload).to match hash_including(user: 'user', password: 'pass')
     end
   end
 
@@ -47,7 +41,7 @@ RSpec.describe IbanCalculator::CalculateIban do
     end
 
     it 'adds default payload' do
-      expect(subject.iban_payload({}).keys).to include(:user, :password, :legacy_mode)
+      expect(subject.iban_payload({}).keys).to include(:legacy_mode)
     end
 
     it 'overrides default data' do

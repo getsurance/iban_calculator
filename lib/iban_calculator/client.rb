@@ -7,12 +7,14 @@ module IbanCalculator
     PROBABLY_VALID_RESPONSE_CODE = 32..127
     SERVICE_ERROR_RESPONSE_CODE = 65536
 
-    def initialize(args = {})
-      @adapter = Savon.client(args)
+    def initialize(user:, password:, adapter_options: {})
+      @user = user
+      @password = password
+      @adapter = Savon.client(adapter_options)
     end
 
-    def call(operation, args = {})
-      raw_response = adapter.(operation, args)
+    def call(operation, payload = {})
+      raw_response = adapter.(operation, payload.merge(credentials))
       response = raw_response.body["#{operation}_response".to_sym][:return]
 
       case return_code = response[:return_code].to_i
@@ -47,6 +49,10 @@ module IbanCalculator
 
     private
 
-    attr_reader :adapter
+    def credentials
+      { user: user, password: password }
+    end
+
+    attr_reader :adapter, :user, :password
   end
 end

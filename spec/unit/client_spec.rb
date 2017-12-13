@@ -2,8 +2,7 @@ RSpec.describe IbanCalculator::Client do
   include_context 'payload'
   include_context 'response'
 
-  subject { described_class.new(wsdl: '') }
-
+  subject { described_class.new(user: 'user', password: 'password', adapter_options: { wsdl: '' }) }
 
   describe '#call' do
     let(:adapter) { spy(call: response) }
@@ -14,7 +13,12 @@ RSpec.describe IbanCalculator::Client do
 
     it 'calls the adapter with correct arguments' do
       subject.call(operation, { a: :message })
-      expect(adapter).to have_received(:call).with(operation, { a: :message })
+      expect(adapter).to have_received(:call).with(operation, hash_including(a: :message))
+    end
+
+    it 'includes credentials in adapter call' do
+      subject.call(operation, { a: :message })
+      expect(adapter).to have_received(:call).with(operation, hash_including(user: 'user', password: 'password'))
     end
 
     xit 'returns a response object' do
