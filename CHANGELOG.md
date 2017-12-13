@@ -1,3 +1,9 @@
+0.4.0
+-----
+* Remove ActiveSupport completely.
+* Implement unified `IbanCalculator::Response` object for both requests.
+* Rename `IbanCalculator::calculate_iban` to `IbanCalculator::validate_bank_info`.
+
 0.3.0
 -----
 * Remove ActiveSupport::Configurable in favour of Dry::Configurable
