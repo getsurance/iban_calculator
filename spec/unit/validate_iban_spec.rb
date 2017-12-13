@@ -15,7 +15,7 @@ RSpec.describe IbanCalculator::ValidateIban do
 
     it 'includes iban in the message' do
       subject.('iban')
-      expect(client).to have_received(:call).with(:validate_iban, message: (hash_including(iban: 'iban')))
+      expect(client).to have_received(:call).with(:validate_iban, hash_including(iban: 'iban'))
     end
 
     context 'valid response' do

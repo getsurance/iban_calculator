@@ -11,7 +11,7 @@ module IbanCalculator
 
     def call(iban)
       response =
-        client.(:validate_iban, message: { iban: iban }).tap do |resp|
+        client.(:validate_iban, iban: iban).tap do |resp|
           status = resp.body[:validate_iban_response][:return][:result]
           raise ServiceError, status unless resp.body[:validate_iban_response][:return][:return_code]
         end

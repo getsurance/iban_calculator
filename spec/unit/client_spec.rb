@@ -12,13 +12,13 @@ RSpec.describe IbanCalculator::Client do
     before { allow(subject).to receive(:adapter).and_return(adapter) }
 
     it 'calls the adapter with correct arguments' do
-      subject.call(operation, { a: :message })
-      expect(adapter).to have_received(:call).with(operation, hash_including(a: :message))
+      subject.call(operation, a: :message)
+      expect(adapter).to have_received(:call).with(operation, message: hash_including(a: :message))
     end
 
     it 'includes credentials in adapter call' do
-      subject.call(operation, { a: :message })
-      expect(adapter).to have_received(:call).with(operation, hash_including(user: 'user', password: 'password'))
+      subject.call(operation, a: :message)
+      expect(adapter).to have_received(:call).with(operation, message: hash_including(user: 'user', password: 'password'))
     end
 
     xit 'returns a response object' do

@@ -60,7 +60,7 @@ RSpec.describe IbanCalculator::CalculateIban do
 
     it 'calls the client with the generated payload' do
       subject.call({})
-      expect(subject.client).to have_received(:call).with(:calculate_iban, message: anything)
+      expect(subject.client).to have_received(:call).with(:calculate_iban, anything)
     end
   end
 end

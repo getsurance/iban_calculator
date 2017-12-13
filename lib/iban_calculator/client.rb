@@ -14,7 +14,7 @@ module IbanCalculator
     end
 
     def call(operation, payload = {})
-      raw_response = adapter.(operation, payload.merge(credentials))
+      raw_response = adapter.(operation, message: payload.merge(credentials))
       response = raw_response.body["#{operation}_response".to_sym][:return]
 
       case return_code = response[:return_code].to_i

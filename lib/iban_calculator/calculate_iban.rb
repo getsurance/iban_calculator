@@ -34,7 +34,7 @@ module IbanCalculator
     def call(attributes)
       payload = iban_payload(attributes)
 
-      response = client.(:calculate_iban, message: payload)
+      response = client.(:calculate_iban, payload)
       log "iban lookup attributes=#{attributes} payload=#{payload} response=#{response}"
       response
     end
