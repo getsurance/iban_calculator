@@ -28,13 +28,15 @@ module IbanCalculator
     end
 
     def formatted_result(data)
-      { iban: data[:iban],
+      {
+        iban: data[:iban],
         bics: process_bic_candidates(data[:bic_candidates]),
         country: data[:country],
         bank_code: data[:bank_code],
         bank: data[:bank],
         account_number: data[:account_number],
-        updated_at: Date.parse(data[:data_age]) }
+        updated_at: Date.parse(data[:data_age])
+      }
     end
 
     def process_bic_candidates(candidates)

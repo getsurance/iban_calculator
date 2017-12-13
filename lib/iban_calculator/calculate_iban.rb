@@ -38,7 +38,7 @@ module IbanCalculator
 
       response = client.(:calculate_iban, message: payload)
       log "iban lookup attributes=#{attributes} payload=#{payload} response=#{response}"
-
+      response
     end
 
     def italian_account_number(attributes = {})

@@ -39,7 +39,7 @@ module IbanCalculator
     private
 
     def client
-      @client ||= Savon.client(wsdl: config.url, logger: config.logger)
+      @client ||= Client.new(wsdl: config.url, logger: config.logger)
     end
   end
 end
