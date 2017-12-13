@@ -24,19 +24,17 @@ module IbanCalculator
     end
 
     def validate_iban(iban)
-      response =
-        client.(:validate_iban, message: { iban: iban }).tap do |resp|
-          status = resp.body[:"#{method}_response"][:return][:result]
-          raise ServiceError, status unless resp.body[:"#{method}_response"][:return][:return_code]
-        end
-
-      IbanValidatorResponse.new(response.body[:validate_iban_response][:return])
+      iban_validator.(iban)
     end
 
     private
 
     def iban_calculator
       @iban_calculator ||= CalculateIban.new(client, config.logger)
+    end
+
+    def iban_validator
+      @iban_validator ||= ValidateIban.new(client, config.logger)
     end
 
     def client
