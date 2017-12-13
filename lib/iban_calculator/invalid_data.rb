@@ -7,8 +7,8 @@ module IbanCalculator
       1024 => [:bank_code,      [:invalid_length]],
       2048 => [:iban,           [:checksum_failed]],
       4096 => [:base,           [:data_missing]],
-      8192 => [:country,        [:not_supported]],
-    }
+      8192 => [:country,        [:not_supported]]
+    }.freeze
 
     attr_accessor :errors
 
@@ -18,10 +18,9 @@ module IbanCalculator
     end
 
     def resolve_error_code(error_code)
-      known_error_codes(error_code).reduce(Hash.new([])) do |hsh, item|
+      known_error_codes(error_code).each_with_object(Hash.new([])) do |item, hsh|
         error = CODES[item]
         hsh[error[0]] += error[1]
-        hsh
       end
     end
 
