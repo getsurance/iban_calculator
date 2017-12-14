@@ -1,6 +1,5 @@
 module IbanCalculator
   class Response
-    def initialize(response)
-    end
+    def initialize(response); end
   end
 end

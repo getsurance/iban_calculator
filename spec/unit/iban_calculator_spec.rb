@@ -4,9 +4,9 @@ RSpec.describe IbanCalculator do
 
     it 'calls the iban_calculator with arguments' do
       allow(described_class).to receive(:iban_calculator).and_return(calculator)
-      described_class.calculate_iban('arguments')
+      described_class.calculate_iban({})
 
-      expect(calculator).to have_received(:call).with('arguments')
+      expect(calculator).to have_received(:call).with(hash_including(:country, :bank_code, :account_number))
     end
   end
 

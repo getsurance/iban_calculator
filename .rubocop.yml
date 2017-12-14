@@ -32,7 +32,8 @@ Style/LambdaCall:
   EnforcedStyle: braces
 
 Style/HashSyntax:
-  Enabled: false
+  Enabled: true
+  EnforcedStyle: ruby19
 
 Style/NumericLiterals:
   Enabled: false
