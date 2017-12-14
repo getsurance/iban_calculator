@@ -5,21 +5,21 @@ RSpec.describe IbanCalculator do
 
   before { allow_any_instance_of(Savon::Client).to receive(:call).and_return(response) }
 
-  describe '.calculate_iban' do
+  describe '.validate_bank_info' do
     let(:operation) { :calculate_iban }
 
     it 'calls the iban_calculator with arguments' do
       calculator = spy
-      allow(described_class).to receive(:iban_calculator).and_return(calculator)
+      allow(described_class).to receive(:bank_info_validator).and_return(calculator)
 
-      described_class.calculate_iban({})
+      described_class.validate_bank_info({})
 
       expect(calculator).to have_received(:call).with(hash_including(:country, :bank_code, :account_number))
     end
 
     context 'valid response' do
       it 'returns a response object' do
-        expect(subject.calculate_iban(country: 'DE', bank_code: 'code', account_number: 'number')).to be_a(IbanCalculator::Response)
+        expect(subject.validate_bank_info(country: 'DE', bank_code: 'code', account_number: 'number')).to be_a(IbanCalculator::Response)
       end
     end
   end

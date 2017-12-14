@@ -1,7 +1,8 @@
 require_relative 'client'
 
 module IbanCalculator
-  class CalculateIban
+  class ValidateBankInfo
+    OPERATION = :calculate_iban
     ITALIAN_IBAN_LENGTH = 27
     PREFIX_AND_CHECKSUM_LENGTH = 4
 
@@ -15,7 +16,7 @@ module IbanCalculator
     def call(attributes)
       payload = build_payload(attributes)
 
-      client.(:calculate_iban, payload)
+      client.(OPERATION, payload)
     end
 
     def build_payload(attributes)

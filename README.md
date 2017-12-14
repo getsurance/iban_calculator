@@ -6,19 +6,15 @@ A wrapper for ibanrechner.de API. It allows converting bank account data from le
 
 Add this line to your application's Gemfile:
 
-    gem 'iban_calculator'
+    gem 'iban_calculator', git: 'https://github.com/getsurance/iban_calculator'
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install iban_calculator
-
 ## Usage
 
-In order to use iban calculator, you need to create an account at [iban-bic.com](http://www.iban-bic.com/).
+In order to use this gem, you first need to create an account at [iban-bic.com](http://www.iban-bic.com/).
 
 Configuration can be done with a block:
 
@@ -30,20 +26,29 @@ IbanCalculator.configure do |config|
 end
 ```
 
-Whenever you need to convert European legacy account data to new SEPA IBAN format:
+You can validate an IBAN:
 
 ```ruby
-IbanCalculator.calculate_iban country: 'DE', account_number: '123', bank_code: '456'
+IbanCalculator.validate_iban('AL90208110080000001039531801')
+```
+
+You can validate bank info:
+
+```ruby
+IbanCalculator.validate_bank_info(country: 'DE', account_number: '123', bank_code: '456')
 ```
 
 Example data can be found at: http://www.iban-bic.com/sample_accounts.html
 
-You can also validate a given IBAN and fetch additional data about it:
 
+Validations return a `IbanCalculator::Response` object that can be queried:
 ```ruby
-IbanCalculator.validate_iban 'AL90208110080000001039531801'
-```
+response = IbanCalculator.validate_iban('AL90208110080000001039531801')
 
+response.valid? # true or false
+
+response.conclusive? # if the response is valid but not conclusive you might want to check it manually.
+```
 
 ## Contributing
 

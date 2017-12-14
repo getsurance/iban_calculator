@@ -1,4 +1,4 @@
-RSpec.describe IbanCalculator::CalculateIban do
+RSpec.describe IbanCalculator::ValidateBankInfo do
   include_context 'payload'
 
   subject { described_class.new(instance_double(IbanCalculator::Client)) }

@@ -2,7 +2,7 @@ require 'iban_calculator/version'
 require 'dry-configurable'
 
 require 'iban_calculator/errors'
-require 'iban_calculator/calculate_iban'
+require 'iban_calculator/validate_bank_info'
 require 'iban_calculator/validate_iban'
 
 module IbanCalculator
@@ -14,8 +14,8 @@ module IbanCalculator
   setting :logger, Logger.new(STDOUT)
 
   class << self
-    def calculate_iban(attributes = {})
-      iban_calculator.(
+    def validate_bank_info(attributes = {})
+      bank_info_validator.(
         country: attributes[:country],
         bank_code: attributes[:bank_code],
         account_number: attributes[:account_number],
@@ -31,8 +31,8 @@ module IbanCalculator
 
     private
 
-    def iban_calculator
-      @iban_calculator ||= CalculateIban.new(client)
+    def bank_info_validator
+      @bank_info_validator ||= ValidateBankInfo.new(client)
     end
 
     def iban_validator
