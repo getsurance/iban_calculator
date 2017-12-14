@@ -1,13 +1,9 @@
 require 'iban_calculator/version'
 require 'dry-configurable'
-require 'logger'
 
-require 'iban_calculator/bank'
 require 'iban_calculator/errors'
-require 'iban_calculator/bic_candidate'
 require 'iban_calculator/calculate_iban'
 require 'iban_calculator/validate_iban'
-require 'iban_calculator/iban_validator_response'
 
 module IbanCalculator
   extend Dry::Configurable

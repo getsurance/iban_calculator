@@ -1,5 +1,3 @@
-require 'iban_calculator/iban_validator_response'
-
 module IbanCalculator
   class ValidateIban
     attr_reader :client
