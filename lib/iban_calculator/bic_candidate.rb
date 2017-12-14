@@ -17,7 +17,7 @@ module IbanCalculator
     end
 
     def source
-      www_count > 0 ? :www : :directory
+      www_count.positive? ? :www : :directory
     end
 
     def as_json(_opts = {})

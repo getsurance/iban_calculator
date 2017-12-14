@@ -2,6 +2,7 @@ require 'iban_calculator'
 
 require_relative 'shared/payload'
 require_relative 'shared/response'
+require_relative 'shared/bic_candidate'
 
 RSpec.configure do |config|
   config.filter_run :focus

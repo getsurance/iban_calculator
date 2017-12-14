@@ -1,7 +1,8 @@
 AllCops:
   TargetRubyVersion: 2.4
   Exclude:
-    - 'db/**/*.rb'
+    - 'spec/shared/*'
+    - 'spec/unit/client_spec.rb' # TODO: Parsing error. Fix later.
 
 Metrics/LineLength:
   Enabled: false

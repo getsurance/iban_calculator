@@ -13,18 +13,19 @@ RSpec.describe IbanCalculator::CalculateIban do
     it 'returns hash with correct account number if valid data is provided' do
       expect(
         subject.italian_account_number(
-          :country => 'IT',
-          :cab => '03280',
-          :abi => '03002',
-          :cin => 'D',
-          :account => '400162854')
-      ).to eq(:account => 'D0300203280000400162854')
+          country: 'IT',
+          cab: '03280',
+          abi: '03002',
+          cin: 'D',
+          account: '400162854'
+        )
+      ).to eq(account: 'D0300203280000400162854')
     end
   end
 
   describe '#build_payload' do
     context 'italian data is provided' do
-      before { allow(subject).to receive(:italian_account_number).and_return({ :account => 'italy-123' }) }
+      before { allow(subject).to receive(:italian_account_number).and_return(account: 'italy-123') }
 
       it 'normalizes italian account data' do
         subject.build_payload({})
@@ -32,11 +33,11 @@ RSpec.describe IbanCalculator::CalculateIban do
       end
 
       it 'merges italian data' do
-        expect(subject.build_payload({ :country => 'IT' })).to match(hash_including(account: 'italy-123'))
+        expect(subject.build_payload(country: 'IT')).to match(hash_including(account: 'italy-123'))
       end
 
       it 'strips italian data' do
-        expect(subject.build_payload({ :cin => '123' }).keys).to_not include('cin')
+        expect(subject.build_payload(cin: '123').keys).to_not include('cin')
       end
     end
 
@@ -45,11 +46,11 @@ RSpec.describe IbanCalculator::CalculateIban do
     end
 
     it 'overrides default data' do
-      expect(subject.build_payload({ bank_code: '123' })).to match hash_including(bank_code: '123')
+      expect(subject.build_payload(bank_code: '123')).to match hash_including(bank_code: '123')
     end
 
     it 'replaces account_number with account' do
-      expect(subject.build_payload({ account_number: '123' })).to match hash_including(account: '123')
+      expect(subject.build_payload(account_number: '123')).to match hash_including(account: '123')
     end
   end
 
@@ -59,7 +60,7 @@ RSpec.describe IbanCalculator::CalculateIban do
     before { allow(subject.client).to receive(:call).and_return(response) }
 
     it 'calls the client with the generated payload' do
-      subject.call({})
+      subject.({})
       expect(subject.client).to have_received(:call).with(:calculate_iban, anything)
     end
   end
