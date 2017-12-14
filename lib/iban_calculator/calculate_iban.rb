@@ -5,21 +5,17 @@ module IbanCalculator
     ITALIAN_IBAN_LENGTH = 27
     PREFIX_AND_CHECKSUM_LENGTH = 4
 
-    attr_accessor :client, :logger
+    attr_accessor :client
 
-    def initialize(client, logger)
+    def initialize(client)
       @client = client
-      @logger = logger
     end
 
     # You should provide country, bank_code, and account_number. (cin, abi, and cab for Italian accounts)
     def call(attributes)
       payload = build_payload(attributes)
 
-      response = client.(:calculate_iban, payload)
-      log "iban calculation attributes=#{attributes} payload=#{payload} response=#{response}"
-
-      response
+      client.(:calculate_iban, payload)
     end
 
     def build_payload(attributes)
@@ -41,10 +37,6 @@ module IbanCalculator
 
     def default_payload
       { country: '', bank_code: '', account: '', user: '', password: '', bic: '', legacy_mode: 0 }
-    end
-
-    def log(message)
-      logger.info message
     end
   end
 end

@@ -36,7 +36,7 @@ module IbanCalculator
     private
 
     def iban_calculator
-      @iban_calculator ||= CalculateIban.new(client, config.logger)
+      @iban_calculator ||= CalculateIban.new(client)
     end
 
     def iban_validator

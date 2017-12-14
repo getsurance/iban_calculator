@@ -1,9 +1,7 @@
 RSpec.describe IbanCalculator::CalculateIban do
   include_context 'payload'
 
-  subject { described_class.new(instance_double(IbanCalculator::Client), Logger.new(STDOUT)) }
-
-  before { allow(subject.logger).to receive(:info) }
+  subject { described_class.new(instance_double(IbanCalculator::Client)) }
 
   describe '#italian_account_number' do
     it 'returns an empty hash if not all fields are provided' do
