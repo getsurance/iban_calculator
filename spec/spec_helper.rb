@@ -28,5 +28,6 @@ RSpec.configure do |config|
   config.before(:each) do
     IbanCalculator.config.user = ''
     IbanCalculator.config.password = ''
+    IbanCalculator.config.logger.level = Logger::ERROR
   end
 end

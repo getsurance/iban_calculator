@@ -1,23 +1,5 @@
 require_relative 'client'
 
-# Return codes and their meaning:
-#
-# 0 = all checks were successful
-#
-# 1 = sub account number has been added automatically
-# 2 = account number did not include a checksum
-# 4 = checksum has not been checked
-# 8 = bank code has not been checked
-#
-# 32 = A sub account number might be required, but could not be determined autoamtically
-#
-# 128 = checksum for account_number is invalid
-# 256 = bank_code could not be found is database
-# 512 = account_number has an invalid length
-# 1024 = bank_code has an invalid length
-# 4096 = data is missing (i.e. country code)
-# 8192= country is not yet supported
-
 module IbanCalculator
   class CalculateIban
     ITALIAN_IBAN_LENGTH = 27

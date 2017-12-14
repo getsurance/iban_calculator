@@ -40,7 +40,7 @@ module IbanCalculator
     end
 
     def iban_validator
-      @iban_validator ||= ValidateIban.new(client, config.logger)
+      @iban_validator ||= ValidateIban.new(client)
     end
 
     def client
