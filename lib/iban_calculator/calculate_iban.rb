@@ -47,7 +47,7 @@ module IbanCalculator
     end
 
     def default_payload
-      { country: '', bank_code: '', account: '', bic: '', legacy_mode: 0 }
+      { country: '', bank_code: '', account: '', user: '', password: '', bic: '', legacy_mode: 0 }
     end
 
     def iban_payload(attributes)
