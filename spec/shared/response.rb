@@ -11,7 +11,7 @@ RSpec.shared_context 'response' do
     double(body: { "#{operation}_response".to_sym => { return: response } })
   end
 
-  def valid_response
+  let(:valid_response) {
     {
       :iban => 'IE92BOFI90001710027952',
       :result => 'passed',
@@ -57,9 +57,9 @@ RSpec.shared_context 'response' do
       :balance => '1',
       :"@xsi:type" => 'tns:IBANValResStruct'
     }
-  end
+  }
 
-  def invalid_response
+  let(:invalid_response) {
     {
       :iban => 'IE92BOFI900017100',
       :result => 'failed',
@@ -97,5 +97,5 @@ RSpec.shared_context 'response' do
       :balance => '0',
       :"@xsi:type" => 'tns:IBANValResStruct'
     }
-  end
+  }
 end

@@ -3,9 +3,9 @@ require_relative 'response'
 
 module IbanCalculator
   class Client
-    VALID_RESPONSE_CODE = 0..31
-    PROBABLY_VALID_RESPONSE_CODE = 32..127
-    SERVICE_ERROR_RESPONSE_CODE = 65536
+    VALID_RETURN_CODE = 0..31
+    PROBABLY_VALID_RETURN_CODE = 32..127
+    SERVICE_ERROR_RETURN_CODE = 65536
 
     def initialize(user:, password:, adapter_options: {})
       @user = user
@@ -15,36 +15,20 @@ module IbanCalculator
 
     def call(operation, payload = {})
       raw_response = adapter.(operation, message: payload.merge(credentials))
-      response = raw_response.body["#{operation}_response".to_sym][:return]
+      old_response = raw_response.body["#{operation}_response".to_sym][:return]
 
-      case return_code = response[:return_code].to_i
-      when VALID_RESPONSE_CODE
-        formatted_result(response)
-      when PROBABLY_VALID_RESPONSE_CODE
-        formatted_result(response)
-      when SERVICE_ERROR_RESPONSE_CODE
+      response = Response.new(old_response)
+
+      case response.return_code
+      when VALID_RETURN_CODE
+        response
+      when PROBABLY_VALID_RETURN_CODE
+        response
+      when SERVICE_ERROR_RETURN_CODE
         raise ServiceError, 'Service could not handle the request'
       else
-        raise InvalidData.new('Invalid input data', return_code)
+        raise InvalidData.new('Invalid input data', response.return_code)
       end
-    end
-
-    def formatted_result(data)
-      {
-        iban: data[:iban],
-        bics: process_bic_candidates(data[:bic_candidates]),
-        country: data[:country],
-        bank_code: data[:bank_code],
-        bank: data[:bank],
-        account_number: data[:account_number],
-        updated_at: Date.parse(data[:data_age])
-      }
-    end
-
-    def process_bic_candidates(candidates)
-      [candidates[:item].select { |key, value| %i[bic zip city].include?(key) && value.is_a?(String) }]
-    rescue StandardError
-      raise ArgumentError, 'Could not handle BIC response'
     end
 
     private
