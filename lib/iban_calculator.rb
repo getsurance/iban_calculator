@@ -1,12 +1,9 @@
 require 'iban_calculator/version'
 require 'dry-configurable'
-require 'logger'
 
-require 'iban_calculator/bank'
-require 'iban_calculator/bic_candidate'
-require 'iban_calculator/calculate_iban'
-require 'iban_calculator/iban_validator_response'
-require 'iban_calculator/invalid_data'
+require 'iban_calculator/errors'
+require 'iban_calculator/validate_bank_info'
+require 'iban_calculator/validate_iban'
 
 module IbanCalculator
   extend Dry::Configurable
@@ -16,30 +13,41 @@ module IbanCalculator
   setting :password, ''
   setting :logger, Logger.new(STDOUT)
 
-  ServiceError = Class.new(StandardError)
-
   class << self
-    def calculate_iban(attributes = {})
-      calculator = CalculateIban.new(config.user, config.password, client, config.logger)
-      calculator.(attributes)
+    def validate_bank_info(attributes = {})
+      bank_info_validator.(
+        country: attributes[:country],
+        bank_code: attributes[:bank_code],
+        account_number: attributes[:account_number],
+        cin: attributes[:cin],
+        abi: attributes[:abi],
+        cab: attributes[:cab]
+      )
     end
 
     def validate_iban(iban)
-      response = execute(:validate_iban, iban: iban, user: config.user, password: config.password)
-      IbanValidatorResponse.new(response.body[:validate_iban_response][:return])
-    end
-
-    def execute(method, options = {})
-      client.(method, message: options).tap do |response|
-        status = response.body[:"#{method}_response"][:return][:result]
-        raise ServiceError, status unless response.body[:"#{method}_response"][:return][:return_code]
-      end
+      iban_validator.(iban)
     end
 
     private
 
+    def bank_info_validator
+      @bank_info_validator ||= ValidateBankInfo.new(client)
+    end
+
+    def iban_validator
+      @iban_validator ||= ValidateIban.new(client)
+    end
+
     def client
-      @client ||= Client.new(wsdl: config.url, logger: config.logger)
+      @client ||= Client.new(
+        user: config.user,
+        password: config.password,
+        adapter_options: {
+          wsdl: config.url,
+          logger: config.logger
+        }
+      )
     end
   end
 end

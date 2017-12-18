@@ -1,7 +1,8 @@
 AllCops:
   TargetRubyVersion: 2.4
   Exclude:
-    - 'db/**/*.rb'
+    - 'spec/shared/*'
+    - 'spec/unit/client_spec.rb' # TODO: Parsing error. Fix later.
 
 Metrics/LineLength:
   Enabled: false
@@ -32,7 +33,8 @@ Style/LambdaCall:
   EnforcedStyle: braces
 
 Style/HashSyntax:
-  Enabled: false
+  Enabled: true
+  EnforcedStyle: ruby19
 
 Style/NumericLiterals:
   Enabled: false
