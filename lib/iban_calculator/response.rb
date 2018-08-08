@@ -1,19 +1,20 @@
-require 'dry-struct'
+require 'dry-initializer'
+require 'dry-types'
 
 module IbanCalculator
-  class Response < Dry::Struct::Value
+  class Response
+    extend Dry::Initializer
+
     CONCLUSIVENESS_THRESHOLD = 32
     CORRECTNESS_THRESHOLD = 127
 
-    constructor_type :schema
-
-    attribute :result, Dry::Types['strict.string']
-    attribute :return_code, Dry::Types['coercible.int']
-    attribute :iban, Dry::Types['strict.string'].optional
-    attribute :country, Dry::Types['strict.string'].optional
-    attribute :bank_code, Dry::Types['strict.string'].optional
-    attribute :bank, Dry::Types['strict.string'].optional
-    attribute :account_number, Dry::Types['strict.string'].optional
+    option :result, Dry::Types['strict.string']
+    option :return_code, Dry::Types['coercible.integer']
+    option :iban, Dry::Types['coercible.string'], optional: true
+    option :country, Dry::Types['coercible.string'], optional: true
+    option :bank_code, Dry::Types['coercible.string'], optional: true
+    option :bank, Dry::Types['coercible.string'], optional: true
+    option :account_number, Dry::Types['coercible.string'], optional: true
 
     def valid?
       return_code < CORRECTNESS_THRESHOLD && result == 'passed'
