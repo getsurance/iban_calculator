@@ -20,11 +20,13 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'dry-configurable', '~> 0.7'
   spec.add_dependency 'dry-initializer'
-  spec.add_dependency 'dry-types'
+  spec.add_dependency 'dry-types', '~> 0.12.3'
   spec.add_dependency 'savon', '~> 2'
 
   spec.add_development_dependency 'bundler', '~> 1.6'
   spec.add_development_dependency 'rake', '~> 0'
   spec.add_development_dependency 'rspec', '~> 3'
+  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'pry-nav'
   spec.add_development_dependency 'rubocop'
 end
