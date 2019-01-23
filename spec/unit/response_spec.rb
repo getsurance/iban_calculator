@@ -59,5 +59,20 @@ RSpec.describe IbanCalculator::Response do
         expect(subject.conclusive?).to eq false
       end
     end
+
+    context 'marked as blacklisted' do
+      it 'is inconclusive' do
+        subject = described_class.new(return_code: 0, result: 'passed')
+        allow(subject).to receive(:blacklisted?).and_return(true)
+        expect(subject.conclusive?).to eq false
+      end
+    end
+  end
+
+  describe '#blacklisted?' do
+    it 'checks if url matches expected blacklist token' do
+      subject = described_class.new(iban_url: 'IBAN_BLACKLISTED', result: 'passed', return_code: 0)
+      expect(subject.blacklisted?).to eq true
+    end
   end
 end

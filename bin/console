@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+ENV['APP_ENV'] ||= 'development'
+
+require 'bundler/setup'
+
+begin
+  require 'pry'
+  Pry.start
+rescue LoadError
+  require 'irb'
+  IRB.start
+end
