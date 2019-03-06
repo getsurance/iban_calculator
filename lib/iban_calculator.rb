@@ -43,6 +43,7 @@ module IbanCalculator
       @client ||= Client.new(
         user: config.user,
         password: config.password,
+        logger: config.logger,
         adapter_options: {
           wsdl: config.url,
           logger: config.logger
