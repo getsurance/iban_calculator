@@ -1,8 +1,7 @@
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
   Exclude:
-    - 'spec/shared/*'
-    - 'spec/unit/client_spec.rb' # TODO: Parsing error. Fix later.
+    - 'db/**/*.rb'
 
 Metrics/LineLength:
   Enabled: false
@@ -22,6 +21,12 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Enabled: false
 
+Style/DoubleNegation:
+  Enabled: false
+
+Style/EmptyCaseCondition:
+  Enabled: false
+
 Style/FrozenStringLiteralComment:
   Enabled: false
 
@@ -32,12 +37,26 @@ Style/LambdaCall:
   Enabled: true
   EnforcedStyle: braces
 
-Style/HashSyntax:
-  Enabled: true
-  EnforcedStyle: ruby19
-
 Style/NumericLiterals:
   Enabled: false
 
 Style/DateTime:
   Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/GuardClause:
+  MinBodyLength: 50
+
+Style/SingleLineMethods:
+  Enabled: false
+
+Layout/EmptyLineBetweenDefs:
+  AllowAdjacentOneLineDefs: true
+
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+
+Lint/UnusedMethodArgument:
+  AllowUnusedKeywordArguments: true

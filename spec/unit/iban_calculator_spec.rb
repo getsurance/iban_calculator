@@ -1,7 +1,7 @@
 RSpec.describe IbanCalculator do
   include_context 'response'
 
-  let(:response) { build_valid_response(operation) }
+  let(:response) { build_valid_raw_response(operation) }
 
   before { allow_any_instance_of(Savon::Client).to receive(:call).and_return(response) }
 

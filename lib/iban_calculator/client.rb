@@ -3,11 +3,14 @@ require_relative 'response'
 
 module IbanCalculator
   class Client
+    attr_reader :logger
+
     SERVICE_ERROR_RETURN_CODE = 65536
 
-    def initialize(user:, password:, adapter_options: {})
+    def initialize(user:, password:, logger: Logger.new(STDOUT), adapter_options: {})
       @user = user
       @password = password
+      @logger = logger
       @adapter = Savon.client(adapter_options)
     end
 

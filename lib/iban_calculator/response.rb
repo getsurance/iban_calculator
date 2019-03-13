@@ -16,6 +16,7 @@ module IbanCalculator
     option :bank, Dry::Types['coercible.string'], optional: true
     option :account_number, Dry::Types['coercible.string'], optional: true
     option :iban_url, Dry::Types['coercible.string'], optional: true
+    option :balance, Dry::Types['coercible.int'], optional: true
 
     def valid?
       return_code < CORRECTNESS_THRESHOLD && result == 'passed'
