@@ -1,0 +1,55 @@
+version: 2.1
+executors:
+  setup_build:
+    docker:
+      - image: circleci/ruby:2.6.3
+    working_directory: ~/repo
+jobs:
+  build:
+    executor: setup_build
+    steps:
+      - checkout
+      - run:
+          name: Configure bundler
+          command: |
+            export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")
+            gem install bundler -v $BUNDLER_VERSION
+      - restore_cache:
+          keys:
+            - v1.1-dependencies-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Install dependencies
+          command: bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      - save_cache:
+          paths:
+            - vendor/bundle
+          key: v1.1-dependencies-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Run automated tests
+          command: bundle exec rspec
+
+  publish_release_production:
+    executor: setup_build
+    steps:
+      - checkout
+      - run:
+          name: Release new gem version
+          command: sh release.sh
+
+
+workflows:
+  version: 2
+  continuous_delivery:
+    jobs:
+      - build
+      - hold_publish_release_production:
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - publish_release_production:
+          requires:
+            - hold_publish_release_production
