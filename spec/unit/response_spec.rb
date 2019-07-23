@@ -15,7 +15,7 @@ RSpec.describe IbanCalculator::Response do
     end
 
     it 'has to be present' do
-      expect { described_class.new(response.merge(return_code: '')) }.to raise_error(ArgumentError)
+      expect { described_class.new(response.merge(return_code: '')) }.to raise_error(Dry::Types::CoercionError)
     end
   end
 
